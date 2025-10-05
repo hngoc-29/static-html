@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Loves</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, #000011 0%, #000000 100%);
+      font-family: 'Times New Roman', Times, serif;
+      user-select: none;
+      perspective: 1000px;
+      cursor: pointer;
+      overscroll-behavior: none;
+      touch-action: none;
+    }
+
+    #galaxy,
+    #rotatingContainer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    #rotatingContainer {
+      z-index: 2;
+      top: 50%;
+      left: 50%;
+      transform-style: preserve-3d;
+      transform-origin: center center;
+      transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg);
+    }
+
+    .text-particle,
+    .image-particle {
+      position: absolute;
+      will-change: transform, opacity;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .text-particle {
+      white-space: nowrap;
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+      color: #ff7487;
+    }
+
+    .image-particle {
+      max-width: 50px;
+      max-height: 50px;
+      border-radius: 5px;
+      filter: drop-shadow(0 0 4px #fff);
+    }
+
+    /* Vô hiệu hóa highlight khi click */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    /* Style cho thông báo */
+    #notification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 16px;
+      z-index: 1000;
+      animation: fadeOut 3s forwards;
+      pointer-events: none;
+    }
+
+    @keyframes fadeOut {
+      0% {
+        opacity: 1;
+      }
+
+      70% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="galaxy"></div>
+  <div id="rotatingContainer"></div>
+  <div id="notification">Nhấn đúp để mở nhạc 🎵</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <script>
+    const rotatingContainer = document.getElementById('rotatingContainer');
+    const galaxy = document.getElementById('galaxy');
+
+    const moonUrl = 'https://res.cloudinary.com/dint85klf/image/upload/v1759652375/id5477337-moon-shutterstock2-870x522.jpg.webp-removebg-preview_n70bp1.png';
+    const sunUrl = 'https://res.cloudinary.com/dint85klf/image/upload/v1759652925/photo1616752083426-1616752083558340068950-removebg-preview_x2tp7s.png';
+    const messages = [
+      "Trung thu vui vẻ nhé bạn",
+      "Chúc bạn trung thu tràn ngập tiếng cười",
+      "Trung thu sum vầy bên nhau",
+      "Kết nối yêu thương - Trung thu hạnh phúc"
+    ];
+    const imageURLs = [
+      "https://cdn-media.sforum.vn/storage/app/media/ctv_seo10/bai-phat-bieu-tet-trung-thu-thumbnail.jpg",
+      "https://urbox.vn/_next/image?url=https%3A%2F%2Fupload.urbox.vn%2Fstrapi-mobile%2Ftet_trung_thu_feature_image_1_bc298a6819_cb6ed5ebc7_e4eb8f1839.png&w=2048&q=75",
+      "https://file.hstatic.net/200000335757/file/tochuctettrungthuchothieunhi_17476efd45e847589eda37c7bc806953_grande.jpg"
+    ];
+    const icons = ["🌕", "🏮", "🥮", "🎊"];
+    const maxParticles = 60; // giảm từ 120 xuống 60
+    const activeParticles = new Set();
+
+    function createParticle(type = 'text') {
+      if (activeParticles.size >= maxParticles) return;
+
+      const el = type === 'text' ? document.createElement('div') : document.createElement('img');
+      if (type === 'text') {
+        const isIcon = Math.random() < 0.3;
+        el.className = 'text-particle';
+        el.textContent = isIcon ? icons[Math.floor(Math.random() * icons.length)] : messages[Math.floor(Math.random() * messages.length)];
+        el.style.fontSize = (isIcon ? 20 : 18) + Math.random() * 10 + 'px';
+      } else {
+        el.className = 'image-particle';
+        el.src = imageURLs[Math.floor(Math.random() * imageURLs.length)];
+      }
+      el.style.opacity = 0;
+      rotatingContainer.appendChild(el);
+
+      const w = el.offsetWidth || 40;
+      el.style.left = Math.random() * (window.innerWidth - w) + 'px';
+
+      const z = -Math.random() * 300;
+      const startY = -50;
+      const endY = window.innerHeight + 50;
+      const duration = 7000 + Math.random() * 4000;
+      const t0 = performance.now();
+
+      function animate(t) {
+        const p = (t - t0) / duration;
+        if (p >= 1) {
+          el.remove();
+          activeParticles.delete(el);
+        } else {
+          const y = startY + p * (endY - startY);
+          const op = p < 0.1 ? p * 10 : (p > 0.9 ? (1 - p) * 10 : 1);
+          el.style.opacity = op;
+          el.style.transform = `translate3d(0, ${y}px, ${z}px)`;
+          requestAnimationFrame(animate);
+        }
+      }
+
+      activeParticles.add(el);
+      requestAnimationFrame(animate);
+    }
+
+    function loopParticles() {
+      let last = 0;
+      function tick(t) {
+        if (t - last > 500) { // tăng từ 300 lên 500ms để giảm tần suất
+          createParticle('text');
+          if (Math.random() < 0.3) createParticle('image'); // giảm tỷ lệ xuất hiện ảnh từ 0.5 xuống 0.3
+          last = t;
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function startStars() {
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 150;
+
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0x000000, 0);
+      galaxy.appendChild(renderer.domElement);
+
+      // Thêm mặt trăng
+      const moonGeometry = new THREE.PlaneGeometry(70, 50);
+      const moonTexture = new THREE.TextureLoader().load(moonUrl);
+      const moonMaterial = new THREE.MeshBasicMaterial({
+        map: moonTexture,
+        transparent: true,
+        side: THREE.DoubleSide,
+        opacity: 0.9
+      });
+      const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+      moon.position.set(0, 0, -100);
+      scene.add(moon);
+
+      // Thêm mặt trời
+      const sunGeometry = new THREE.PlaneGeometry(80, 60);
+      const sunTexture = new THREE.TextureLoader().load(sunUrl);
+      const sunMaterial = new THREE.MeshBasicMaterial({
+        map: sunTexture,
+        transparent: true,
+        side: THREE.DoubleSide,
+        opacity: 0.9
+      });
+      const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+      sun.position.set(0, 0, 100);
+      scene.add(sun);
+
+      const starsCount = 500;
+      const positions = new Float32Array(starsCount * 3);
+      for (let i = 0; i < starsCount; i++) {
+        positions[i * 3] = (Math.random() - 0.5) * 400;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 400;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 400;
+      }
+
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+      const starTexture = new THREE.TextureLoader().load('https://threejs.org/examples/textures/sprites/disc.png');
+      const material = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.5,
+        map: starTexture,
+        transparent: true,
+        alphaTest: 0.2,
+        depthWrite: false
+      });
+
+      const stars = new THREE.Points(geometry, material);
+      scene.add(stars);
+
+      let currentRotX = 0;
+      let currentRotY = 0;
+
+      function animate() {
+        const radius = 100;
+        const angleX = -currentRotX * Math.PI / 180;
+        const angleY = -currentRotY * Math.PI / 180;
+
+        // Mặt trăng di chuyển một hướng
+        moon.position.x = Math.sin(angleY) * radius;
+        moon.position.y = Math.sin(angleX) * radius;
+        moon.position.z = -Math.cos(angleX) * Math.cos(angleY) * radius;
+
+        // Mặt trời di chuyển ngược lại
+        sun.position.x = -Math.sin(angleY) * radius;
+        sun.position.y = -Math.sin(angleX) * radius;
+        sun.position.z = Math.cos(angleX) * Math.cos(angleY) * radius;
+
+        // Giữ cả hai luôn hướng về camera
+        moon.lookAt(camera.position);
+        sun.lookAt(camera.position);
+
+        // Ẩn/hiện dựa trên góc nhìn
+        const moonAngle = Math.cos(angleX) * Math.cos(angleY);
+        const sunAngle = -Math.cos(angleX) * Math.cos(angleY);
+
+        moon.material.opacity = moonAngle > 0 ? 0.9 : 0;
+        sun.material.opacity = sunAngle > 0 ? 0.9 : 0;
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      // Thêm hàm để cập nhật góc xoay
+      window.updateMoonRotation = function (rotX, rotY) {
+        currentRotX = rotX;
+        currentRotY = rotY;
+      };
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+
+    function initRotation() {
+      let rotX = 0;
+      let rotY = 0;
+      let isMouseDown = false;
+      let lastMouseX = 0;
+      let lastMouseY = 0;
+
+      function updateRotation(deltaX, deltaY) {
+        rotY += deltaX * 0.2;
+        rotX += deltaY * 0.2;
+        rotatingContainer.style.transform = `translate(-50%, -50%) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+        // Cập nhật góc xoay cho mặt trăng
+        if (window.updateMoonRotation) {
+          window.updateMoonRotation(rotX, rotY);
+        }
+      }
+
+      document.addEventListener('mousedown', (e) => {
+        isMouseDown = true;
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+      });
+
+      document.addEventListener('mouseup', () => {
+        isMouseDown = false;
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isMouseDown) return;
+        const deltaX = e.clientX - lastMouseX;
+        const deltaY = e.clientY - lastMouseY;
+        updateRotation(deltaX, deltaY);
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+      });
+
+      document.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 0) {
+          isMouseDown = true;
+          lastMouseX = e.touches[0].clientX;
+          lastMouseY = e.touches[0].clientY;
+        }
+      }, { passive: true });
+
+      document.addEventListener('touchend', () => {
+        isMouseDown = false;
+      }, { passive: true });
+
+      document.addEventListener('touchmove', (e) => {
+        if (!isMouseDown || e.touches.length === 0) return;
+        const deltaX = e.touches[0].clientX - lastMouseX;
+        const deltaY = e.touches[0].clientY - lastMouseY;
+        updateRotation(deltaX, deltaY);
+        lastMouseX = e.touches[0].clientX;
+        lastMouseY = e.touches[0].clientY;
+      }, { passive: true });
+    }
+
+    function setupMusic() {
+      let started = false;
+      const notification = document.getElementById('notification');
+
+      document.body.addEventListener('dblclick', () => {
+        if (started) return;
+        const audio = new Audio('https://res.cloudinary.com/dint85klf/video/upload/v1759653766/Th%E1%BA%B1ng_Cu%E1%BB%99i_Trung_Thu_Cover_-_The_Boy_Cuoi_Mid_Autumn_Festival_Vietnamese_Music_Piano_Lyrics_-_tinywrist_C%E1%BB%95_Tay_T%C3%AD_Hon_Nh%E1%BA%A1c_thi%E1%BA%BFu_nhi_VN_mp3cut.net_s98i6c.mp3');
+        audio.loop = true;
+        audio.play().catch(() => console.log("Không thể phát nhạc tự động."));
+        started = true;
+        notification.style.display = 'none';
+      });
+    }
+
+    document.addEventListener('touchmove', function (e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      startStars();
+      loopParticles();
+      initRotation();
+      setupMusic();
+    });
+  </script>
+</body>
+
+</html>
