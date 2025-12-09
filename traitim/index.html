@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <title>3D Heart với hiệu ứng - Three.js</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            background: #06060a;
+            overflow: hidden;
+        }
+
+        #info {
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            color: #ddd;
+            font-family: system-ui, sans-serif;
+            font-size: 13px;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 8px 10px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="module">
+        import * as THREE from "https://unpkg.com/three@0.172.0/build/three.module.js";
+        import { OrbitControls } from "https://unpkg.com/three@0.172.0/examples/jsm/controls/OrbitControls.js?module";
+        import { EffectComposer } from "https://unpkg.com/three@0.172.0/examples/jsm/postprocessing/EffectComposer.js?module";
+        import { RenderPass } from "https://unpkg.com/three@0.172.0/examples/jsm/postprocessing/RenderPass.js?module";
+        import { UnrealBloomPass } from "https://unpkg.com/three@0.172.0/examples/jsm/postprocessing/UnrealBloomPass.js?module";
+        import { ShaderPass } from "https://unpkg.com/three@0.172.0/examples/jsm/postprocessing/ShaderPass.js?module";
+        // SubdivisionModifier removed (CDN/CORS issues). We rely on high bevel/curve segments below.
+
+        // Scene + Camera + Renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.1, 100);
+        camera.position.set(0, 1.5, 4);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(innerWidth, innerHeight);
+        renderer.physicallyCorrectLights = true;
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        document.body.appendChild(renderer.domElement);
+
+        // Controls
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.06;
+        controls.minDistance = 1.5;
+        controls.maxDistance = 10;
+
+        // Lights
+        const dir = new THREE.DirectionalLight(0xff9dbd, 1.5);
+        dir.position.set(5, 8, 2);
+        scene.add(dir);
+        scene.add(new THREE.PointLight(0xff6ea6, 1.2, 12, 2));
+        scene.add(new THREE.AmbientLight(0x666677, 0.8));
+
+        // HEART SHAPE (2D) then Extrude -> 3D
+        function createHeartShape() {
+            const x = 0, y = 0;
+            const heart = new THREE.Shape();
+            // điều chỉnh để phần giữa nhỏ hơn, hai lobe trên phồng hơn
+            heart.moveTo(x, y + 0.35);
+            heart.bezierCurveTo(x + 0.28, y + 0.6, x + 0.68, y + 0.58, x + 0.68, y + 0.15);
+            heart.bezierCurveTo(x + 0.68, y - 0.1, x + 0.35, y - 0.25, x, y - 0.55);
+            heart.bezierCurveTo(x - 0.35, y - 0.25, x - 0.68, y - 0.1, x - 0.68, y + 0.15);
+            heart.bezierCurveTo(x - 0.68, y + 0.58, x - 0.28, y + 0.6, x, y + 0.35);
+            return heart;
+        }
+
+        const heartShape = createHeartShape();
+        // làm dày, phồng hơn: sâu lõi vừa phải + bevel lớn và nhiều phân đoạn cho tròn mượt
+        const extrudeSettings = {
+            depth: 0.02,                 // tăng nhiều để 2 mặt tách xa, giảm viền giữa
+            bevelEnabled: true,
+            bevelSegments: 80,           // tăng thêm cho cạnh tròn mượt hơn
+            steps: 2,
+            bevelSize: 0.28,             // giảm để cạnh nhỏ gọn hơn
+            bevelThickness: 0.20,        // tăng để bo sâu hơn
+            curveSegments: 320           // tăng để đường cong siêu mượt
+        };
+        let geometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
+        geometry.center();
+        // ensure non-indexed for modifiers and smooth shading
+        if (geometry.index) geometry = geometry.toNonIndexed();
+        geometry.computeVertexNormals();
+        geometry.normalizeNormals && geometry.normalizeNormals(); // nếu có hàm
+        geometry.computeVertexNormals();
+
+        // PULSE (vertex displacement) - use a ShaderMaterial that wraps MeshStandard-like shading
+        const material = new THREE.MeshPhysicalMaterial({
+            color: new THREE.Color(0xff5a8f),
+            emissive: new THREE.Color(0xff4d7a),
+            emissiveIntensity: 0.25,
+            metalness: 0.08,
+            roughness: 0.35,
+            clearcoat: 0.8,
+            clearcoatRoughness: 0.05,
+            reflectivity: 0.6
+        });
+        material.flatShading = false;
+        material.needsUpdate = true;
+
+        // tăng inflate để phần giữa phồng hơn (giữa front/back rõ rệt)
+        const shaderUniforms = { time: { value: 0 }, inflate: { value: 0.28 } };
+        material.userData.shaderUniforms = shaderUniforms;
+        material.onBeforeCompile = shader => {
+            Object.assign(shader.uniforms, shaderUniforms);
+            shader.vertexShader = shader.vertexShader.replace(
+                '#include <common>',
+                `#include <common>
+         uniform float time;
+         uniform float inflate;
+         varying float vPulse;`
+            );
+            shader.vertexShader = shader.vertexShader.replace(
+                '#include <begin_vertex>',
+                `#include <begin_vertex>
+         // Bulge concentrated toward front/back using normal.z
+         float fb = pow(abs(normal.z), 2.5); // exponent tuned for broader bulge
+         transformed += normal * (inflate * fb);
+         // gentle organic pulse
+         float pulse = 0.03 * sin( (position.y + time*2.0) * 3.0 ) * (1.0 + 0.4 * sin(time*2.1));
+         transformed += normal * pulse;
+         vPulse = pulse;`
+            );
+            shader.fragmentShader = shader.fragmentShader.replace(
+                '#include <common>',
+                `#include <common>
+         varying float vPulse;`
+            );
+            shader.fragmentShader = shader.fragmentShader.replace(
+                'vec4 diffuseColor = vec4( diffuse, opacity );',
+                `vec3 pulseTint = vec3(1.0, 0.45, 0.6) * clamp(vPulse*12.0, 0.0, 1.0);
+         vec4 diffuseColor = vec4( diffuse + pulseTint * 0.12, opacity );`
+            );
+            material.userData.compiledShader = shader;
+        };
+
+        const heart = new THREE.Mesh(geometry, material);
+        heart.castShadow = true;
+        heart.receiveShadow = true;
+        const heightScale = 1.35;
+        heart.scale.set(1, heightScale, 1);
+        scene.add(heart);
+
+        // Tiny shiny rim using a second slightly scaled mesh with additive material
+        const rimMat = new THREE.MeshBasicMaterial({ color: 0xff88bb, transparent: true, opacity: 0.25, blending: THREE.AdditiveBlending, depthWrite: false });
+        const rimMesh = new THREE.Mesh(geometry.clone(), rimMat);
+        rimMesh.scale.set(1.02, 1.02 * heightScale, 1.02);
+        scene.add(rimMesh);
+
+        // PARTICLES AROUND HEART - make round particles using canvas texture (no square corners)
+        function makeCircleTexture(size, innerColor) {
+            const c = document.createElement('canvas');
+            c.width = c.height = size;
+            const ctx = c.getContext('2d');
+            const cx = size / 2, cy = size / 2, r = size / 2;
+            // radial gradient for smooth soft edge
+            const g = ctx.createRadialGradient(cx, cy, r * 0.15, cx, cy, r);
+            g.addColorStop(0, innerColor);
+            g.addColorStop(1, 'rgba(255,192,221,0)');
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, size, size);
+            return new THREE.CanvasTexture(c);
+        }
+
+        const particleCount = 800;
+        const pos = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount; i++) {
+            const r = 1.2 + Math.random() * 0.8;
+            const ang = Math.random() * Math.PI * 2;
+            const y = (Math.random() - 0.5) * 1.8;
+            pos[i * 3] = Math.cos(ang) * r * (0.8 + 0.4 * Math.random());
+            pos[i * 3 + 1] = y;
+            pos[i * 3 + 2] = Math.sin(ang) * r * (0.8 + 0.4 * Math.random());
+        }
+        const pGeom = new THREE.BufferGeometry();
+        pGeom.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+
+        const circleTex = makeCircleTexture(64, 'rgba(255,122,160,1)');
+        const pMat = new THREE.PointsMaterial({
+            size: 0.03,
+            map: circleTex,
+            transparent: true,
+            alphaTest: 0.01,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending,
+            sizeAttenuation: true
+        });
+        // color multiplier left as default because texture holds color
+        const particles = new THREE.Points(pGeom, pMat);
+        scene.add(particles);
+
+        // POSTPROCESSING: bloom
+        const composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
+        const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.8, 0.6, 0.1);
+        bloom.strength = 0.9;
+        bloom.radius = 0.7;
+        bloom.threshold = 0.15;
+        composer.addPass(bloom);
+
+        // tiny vignette / color tweak (optional simple shader pass)
+        const vignetteShader = {
+            uniforms: { tDiffuse: { value: null }, offset: { value: 1.0 }, darkness: { value: 1.2 } },
+            vertexShader: `
+        varying vec2 vUv;
+        void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }
+      `,
+            fragmentShader: `
+        uniform sampler2D tDiffuse;
+        uniform float offset;
+        uniform float darkness;
+        varying vec2 vUv;
+        void main(){
+          vec4 color = texture2D(tDiffuse, vUv);
+          float dist = distance(vUv, vec2(0.5));
+          color.rgb *= smoothstep(0.8, 0.2, dist * (offset*1.2));
+          color.rgb = mix(color.rgb, color.rgb * color.rgb, 0.03 * darkness);
+          gl_FragColor = color;
+        }
+      `
+        };
+        const vig = new ShaderPass(vignetteShader);
+        composer.addPass(vig);
+
+        // Resize handling
+        addEventListener('resize', () => {
+            camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+            renderer.setSize(innerWidth, innerHeight);
+            composer.setSize(innerWidth, innerHeight);
+        });
+
+        // Animation loop
+        const clock = new THREE.Clock();
+        function animate() {
+            const t = clock.getElapsedTime();
+            controls.update();
+
+            // rotate & pulse
+            heart.rotation.y = Math.sin(t * 0.4) * 0.25;
+            heart.rotation.x = Math.sin(t * 0.17) * 0.08;
+            rimMesh.rotation.copy(heart.rotation);
+            rimMesh.position.copy(heart.position);
+
+            // update shader time uniform
+            if (material.userData.shaderUniforms) {
+                material.userData.shaderUniforms.time.value = t;
+            }
+
+            // particles floating
+            const positions = pGeom.attributes.position.array;
+            for (let i = 0; i < particleCount; i++) {
+                const idx = i * 3 + 1;
+                positions[idx] += 0.002 * (Math.sin(t * 1.5 + i) * 0.5 + 0.5);
+                if (positions[idx] > 2.0) positions[idx] = -1.0 + Math.random() * 0.2;
+            }
+            pGeom.attributes.position.needsUpdate = true;
+
+            // subtle camera bob
+            camera.position.x += (Math.sin(t * 0.3) * 0.002);
+            composer.render();
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // OPTIONAL: click to pulse big
+        window.addEventListener('pointerdown', () => {
+            const start = { s: 1.0 }; const end = 1.08;
+            const dur = 220; const begin = performance.now();
+            function step() {
+                const now = performance.now(); const p = (now - begin) / dur;
+                if (p < 1) {
+                    const v = 1 + (end - 1) * Math.sin(p * Math.PI);
+                    heart.scale.set(v, v, v);
+                    rimMesh.scale.set(1.03 * v, 1.03 * v, 1.03 * v);
+                    requestAnimationFrame(step);
+                } else {
+                    heart.scale.set(1, 1, 1); rimMesh.scale.set(1.03, 1.03, 1.03);
+                }
+            }
+            step();
+        });
+
+    </script>
+</body>
+
+</html>
