@@ -254,7 +254,8 @@ function createData() {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "X-Access-Key": "$2a$10$nsUUsCRp7g91LZ8S7MukgeFMifcyFBraXQmz3SJLJ32o64gKSwfw2"  // KHÔNG phải master
+    "X-Master-key": "$2a$10$nsUUsCRp7g91LZ8S7MukgeFMifcyFBraXQmz3SJLJ32o64gKSwfw2",
+    "X-Access-Key": "$2a$10$JENWvzOOgAFjP1AewZhZ5e7I7dVzJ5N0lXqj5xIGxUgUR/vX9TgCu"  // KHÔNG phải master
   },
   body: JSON.stringify({ sample: "Hello World" })
 })
@@ -266,7 +267,7 @@ function createData() {
 function start() {
     const wrapper = document.getElementById('wrapper-pg');
     wrapper.remove();
-    
+    createData();
     startStars();
     loopParticles();
     initRotation();
@@ -330,51 +331,6 @@ function paragraph() {
 
 paragraph();
 setupMusic();
-
-function clickWrong() {
-    const btn_wrong = document.getElementById('btn_ques_2');
-
-    const max_width = window.innerWidth - 100;
-    const max_height = window.innerHeight - 100;
-
-    const x = Math.random() * max_width;
-    const y = Math.random() * max_height;
-
-    btn_wrong.style.position = "absolute";
-    btn_wrong.style.left = `${x}px`;
-    btn_wrong.style.top = `${y}px`;
-
-}on class='btn_ques' id='btn_ques_1' onclick='start()'>${btn_ct[0]}</button>
-                <button class='btn_ques' id='btn_ques_2' onclick='clickWrong()'>${btn_ct[1]}</button>
-                </span>
-                </div>
-            `;
-            }
-            setTimeout(() => {
-                void paraElement.offsetWidth;
-                displayNextParagraph();
-            }, 2000);
-            return;
-        }
-        content += currentString[idx];
-        paraElement.textContent = content;
-        setTimeout(() => render(idx + 1, currentString, content), 100);
-    }
-
-    function displayNextParagraph() {
-        if (currentIndex >= paragraphs.length) {
-            return;
-        }
-        paraElement.style.animation = 'none';
-        const currentString = paragraphs[currentIndex];
-        currentIndex++;
-        render(0, currentString, '');
-    }
-
-    displayNextParagraph();
-}
-
-paragraph();
 
 function clickWrong() {
     const btn_wrong = document.getElementById('btn_ques_2');
