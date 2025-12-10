@@ -249,19 +249,44 @@ document.addEventListener('touchmove', function (e) {
     e.preventDefault();
 }, { passive: false });
 
+function getTimeParts() {
+    const now = new Date();
+
+    // Phần 1: Giờ - Phút
+    const hour = String(now.getHours()).padStart(2, "0");
+    const minute = String(now.getMinutes()).padStart(2, "0");
+    const timeHM = `${hour}:${minute}`;
+
+    // Phần 2: Ngày - Tháng - Năm
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const year = now.getFullYear();
+    const dateDMY = `${day}/${month}/${year}`;
+
+    return { timeHM, dateDMY };
+}
+
 function createData() {
+    const { timeHM, dateDMY } = getTimeParts();
+    let visitorId = localStorage.getItem("visitor_id");
     fetch("https://api.jsonbin.io/v3/b", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "X-Master-key": "$2a$10$nsUUsCRp7g91LZ8S7MukgeFMifcyFBraXQmz3SJLJ32o64gKSwfw2",
-    "X-Access-Key": "$2a$10$JENWvzOOgAFjP1AewZhZ5e7I7dVzJ5N0lXqj5xIGxUgUR/vX9TgCu"  // KHÔNG phải master
-  },
-  body: JSON.stringify({ sample: "Hello World" })
-})
-.then(res => res.json())
-.then(data => console.log("Created:", data))
-.catch(err => console.log(err));
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-Master-key": "$2a$10$nsUUsCRp7g91LZ8S7MukgeFMifcyFBraXQmz3SJLJ32o64gKSwfw2",
+            "X-Access-Key": "$2a$10$JENWvzOOgAFjP1AewZhZ5e7I7dVzJ5N0lXqj5xIGxUgUR/vX9TgCu",
+            "X-Visitor-ID": visitorId // 👈 THÊM VÀO ĐÂY
+        },
+        body: JSON.stringify({
+            status: "Đồng ý",
+            visitor_id: visitorId, // 👈 gửi trong body luôn
+            time: timeHM,
+            day: dateDMY
+        })
+    })
+    .then(res => res.json())
+    .then(data => console.log("Created:", data))
+    .catch(err => console.log(err));
 }
 
 function start() {
@@ -275,10 +300,20 @@ function start() {
 }
 
 function paragraph() {
+    // Tạo visitor_id nếu chưa có
+    let visitorId = localStorage.getItem("visitor_id");
+    if (!visitorId) {
+        visitorId = crypto.randomUUID();
+        localStorage.setItem("visitor_id", visitorId);
+    }
+
+console.log("Visitor ID:", visitorId);
+
     const paragraphs = [
-        'Hmmmmmmm',
+        'Hmmmmmmm!!',
         'T với m quen nhau cũng 2 tháng rồi hẻ.',
-        'M cũng biết là t thích m.',
+        'Suốt thời gian ấy thì t làm cho m buồn nhiều.',
+        'T thật sự xin lỗi',
         'T là một người không giỏi ăn nói, nhạt, trầm tính :))',
         'T cũng không biết m coi t là gì, nma bây giờ thì!!',
         'M làm ny t nha.'
