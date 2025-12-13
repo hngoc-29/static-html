@@ -1,0 +1,201 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background-image: url('https://tintuc.dienthoaigiakho.vn/wp-content/uploads/2025/03/hinh-nen-Hello-Kitty-hong-phan-don-gian-15.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: 'Times New Roman', Times, serif;
+    user-select: none;
+    perspective: 1000px;
+    cursor: pointer;
+    overscroll-behavior: none;
+    touch-action: none;
+}
+
+#galaxy,
+#rotatingContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+}
+
+#rotatingContainer {
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    transform-style: preserve-3d;
+    transform-origin: center center;
+    transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg);
+}
+
+.text-particle,
+.image-particle {
+    position: absolute;
+    will-change: transform, opacity;
+    user-select: none;
+    pointer-events: none;
+}
+
+.text-particle {
+    white-space: nowrap;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+    color: #0c0a0b;
+}
+
+.image-particle {
+    max-width: 50px;
+    max-height: 50px;
+    border-radius: 5px;
+    filter: drop-shadow(0 0 4px #fff);
+}
+
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+#notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 16px;
+    z-index: 1000;
+    animation: fadeOut 3s forwards;
+    pointer-events: none;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    70% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes paragraphFade {
+    0% {}
+
+    10% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    85% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+#wrapper-pg {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+    top: 0;
+}
+
+#paragraph {
+    font-size: 30px;
+    font-family: "Oswald", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    color: #ff7487;
+    padding: 0 40px;
+    max-width: 800px;
+    line-height: 1.6;
+    margin-right: 20px;
+    margin-top: 50%;
+}
+
+.btn_ques_wrapper {
+    margin-left: 100px;
+}
+
+.btn_ques {
+    padding: 12px 24px;
+    margin: 0 10px;
+    font-size: 20px;
+    font-family: 'Times New Roman', Times, serif;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#btn_ques_2 {
+    background-color: #dc3545;
+    color: white;
+    position: absolute;
+}
+
+#btn_ques_2:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+}
+
+#btn_ques_1 {
+    background-color: #28a745;
+    color: white;
+}
+
+#btn_ques_1:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+#currentTime {
+    position: fixed;
+    color: #fff;
+    right: 0;
+}
+
+#music-toolbar {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-family: 'Oswald', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: grab;
+    z-index: 9999;
+    user-select: none;
+    touch-action: none;
+}
+
+#music-toolbar.dragging {
+    opacity: 0.8;
+    cursor: grabbing;
+}
