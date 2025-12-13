@@ -4,20 +4,17 @@ const galaxy = document.getElementById('galaxy');
 const moonUrl = 'https://res.cloudinary.com/dint85klf/image/upload/v1759652375/id5477337-moon-shutterstock2-870x522.jpg.webp-removebg-preview_n70bp1.png';
 const sunUrl = 'https://res.cloudinary.com/dint85klf/image/upload/v1759652925/photo1616752083426-1616752083558340068950-removebg-preview_x2tp7s.png';
 const messages = [
-    "Trung thu vui vẻ nhé bạn",
-    "Chúc bạn trung thu tràn ngập tiếng cười",
-    "Trung thu hành phúc",
-    "Kết nối yêu thương",
-    "Trung thu rực rỡ",
-    "Đừng quên mai đi học",
-    "Mai kiểm tra lý cho t chép bài với"
-];
+    "Vậy là m chấp nhận ròi nha.",
+"I miss u",
+"I ♥️ u", 
+"Nhớ chú ý giữ sức khoẻ nha",
+'Một ngày tốt lành'];
 const imageURLs = [
-    "https://cdn-media.sforum.vn/storage/app/media/ctv_seo10/bai-phat-bieu-tet-trung-thu-thumbnail.jpg",
-    "https://urbox.vn/_next/image?url=https%3A%2F%2Fupload.urbox.vn%2Fstrapi-mobile%2Ftet_trung_thu_feature_image_1_bc298a6819_cb6ed5ebc7_e4eb8f1839.png&w=2048&q=75",
-    "https://file.hstatic.net/200000335757/file/tochuctettrungthuchothieunhi_17476efd45e847589eda37c7bc806953_grande.jpg"
+    "https://miro.medium.com/v2/resize:fit:2000/1*PjD3CtH90bHKo9nt2hP0BQ.jpeg",
+    "https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/fall_in_love_la_gi_70f544d56e.png",
+    "https://img.freepik.com/free-vector/charity-logo-hands-supporting-heart-icon-flat-design-vector-illustration_53876-136266.jpg?semt=ais_hybrid&w=740&q=80"
 ];
-const icons = ["🌕", "🏮", "🥮", "🎊"];
+const icons = ["❤️", "💖", "💘", "💝", "💕", "💗", "💓", "💞"];
 const maxParticles = 60;
 const activeParticles = new Set();
 
@@ -240,7 +237,7 @@ function setupMusic() {
 
     document.body.addEventListener('dblclick', () => {
         if (started) return;
-        const audio = new Audio('https://res.cloudinary.com/dint85klf/video/upload/v1759653766/Th%E1%BA%B1ng_Cu%E1%BB%99i_Trung_Thu_Cover_-_The_Boy_Cuoi_Mid_Autumn_Festival_Vietnamese_Music_Piano_Lyrics_-_tinywrist_C%E1%BB%95_Tay_T%C3%AD_Hon_Nh%E1%BA%A1c_thi%E1%BA%BFu_nhi_VN_mp3cut.net_s98i6c.mp3');
+        const audio = new Audio('https://res.cloudinary.com/dint85klf/video/upload/v1765342463/music_bp4ao6.mp3');
         audio.loop = true;
         audio.play().catch(() => console.log("Không thể phát nhạc tự động."));
         started = true;
@@ -252,22 +249,77 @@ document.addEventListener('touchmove', function (e) {
     e.preventDefault();
 }, { passive: false });
 
+function getTimeParts() {
+    const now = new Date();
+
+    // Phần 1: Giờ - Phút
+    const hour = String(now.getHours()).padStart(2, "0");
+    const minute = String(now.getMinutes()).padStart(2, "0");
+    const timeHM = `${hour}:${minute}`;
+
+    // Phần 2: Ngày - Tháng - Năm
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const year = now.getFullYear();
+    const dateDMY = `${day}/${month}/${year}`;
+
+    return { timeHM, dateDMY };
+}
+
+function createData() {
+    const { timeHM, dateDMY } = getTimeParts();
+    let visitorId = localStorage.getItem("visitor_id");
+    fetch("https://api.jsonbin.io/v3/b", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-Master-key": "$2a$10$nsUUsCRp7g91LZ8S7MukgeFMifcyFBraXQmz3SJLJ32o64gKSwfw2",
+            "X-Access-Key": "$2a$10$JENWvzOOgAFjP1AewZhZ5e7I7dVzJ5N0lXqj5xIGxUgUR/vX9TgCu",
+            "X-Visitor-ID": visitorId // 👈 THÊM VÀO ĐÂY
+        },
+        body: JSON.stringify({
+            status: "Đồng ý",
+            visitor_id: visitorId, // 👈 gửi trong body luôn
+            time: timeHM,
+            day: dateDMY
+        })
+    })
+    .then(res => res.json())
+    .then(data => console.log("Created:", data))
+    .catch(err => console.log(err));
+}
+
 function start() {
     const wrapper = document.getElementById('wrapper-pg');
     wrapper.remove();
+    createData();
     startStars();
     loopParticles();
     initRotation();
-    setupMusic();
     paragraph();
 }
 
 function paragraph() {
+    // Tạo visitor_id nếu chưa có
+    let visitorId = localStorage.getItem("visitor_id");
+    if (!visitorId) {
+        visitorId = crypto.randomUUID();
+        localStorage.setItem("visitor_id", visitorId);
+    }
+
+console.log("Visitor ID:", visitorId);
+
     const paragraphs = [
-        'jdcjks'
+        'Hmmmmmmm!!',
+        'T với m quen nhau cũng 2 tháng rồi hẻ.',
+        'Suốt thời gian ấy thì t làm cho m buồn nhiều.',
+        'T thật sự xin lỗi',
+        'T là một người không giỏi ăn nói, nhạt, trầm tính :))',
+        'T cũng không biết m coi t là gì, nma bây giờ thì!!',
+        'M làm ny t nha.'
     ];
 
-    const btn_ct = ['abc', 'cba'];
+    const btn_ct = ['Đồng ý', 'Từ chối'];
 
     const paraElement = document.getElementById('paragraph');
     let currentIndex = 0;
@@ -313,6 +365,7 @@ function paragraph() {
 }
 
 paragraph();
+setupMusic();
 
 function clickWrong() {
     const btn_wrong = document.getElementById('btn_ques_2');

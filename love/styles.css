@@ -170,3 +170,9 @@ body {
     background-color: #218838;
     transform: scale(1.05);
 }
+
+#currentTime {
+    position: fixed;
+    color: #fff;
+    right: 0;
+}
