@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Happy New Year 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background:
+                radial-gradient(circle at top, #1a0033, #000 60%),
+                radial-gradient(circle at bottom, #001f3f, #000);
+            overflow: hidden;
+            color: #fff;
+        }
+
+        /* ===== INTRO ===== */
+        #intro {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at top, #1a0033, #000 70%);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.2s ease, visibility 1.2s;
+        }
+
+        #intro.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .intro-text {
+            text-align: center;
+            max-width: 80%;
+        }
+
+        .intro-text .line {
+            font-size: 1.4rem;
+            margin: 14px 0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: introFade 1s ease forwards;
+        }
+
+        .intro-text .highlight {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(120deg, #ffd700, #ff4d4d, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Delay từng dòng */
+        .intro-text .line:nth-child(1) {
+            animation-delay: 0.5s;
+        }
+
+        .intro-text .line:nth-child(2) {
+            animation-delay: 2s;
+        }
+
+        .intro-text .line:nth-child(3) {
+            animation-delay: 3.5s;
+        }
+
+        .intro-text .line:nth-child(4) {
+            animation-delay: 5s;
+        }
+
+        @keyframes introFade {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== FIREWORK CANVAS (TOP LAYER) ===== */
+        #fireworks {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ===== GLASS CONTAINER ===== */
+        .container {
+            position: relative;
+            z-index: 5;
+            max-width: 520px;
+            width: 90%;
+            padding: 36px 30px;
+            border-radius: 26px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow:
+                0 0 30px rgba(255, 215, 0, 0.2),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+            text-align: center;
+            animation: panelFade 1.5s ease;
+        }
+
+        .container {
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .container.show {
+            opacity: 1;
+        }
+
+        /* ===== TITLE ===== */
+        #title {
+            font-size: 2.7rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow:
+                0 0 15px rgba(255, 215, 0, 0.6),
+                0 0 35px rgba(255, 77, 77, 0.4);
+        }
+
+        #title span {
+            font-size: 3.1rem;
+            background: linear-gradient(120deg, #ffd700, #ff4d4d, #00ffff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 3s infinite alternate, yearPulse 2s infinite;
+        }
+
+        /* ===== COUNTDOWN ===== */
+        #countdown {
+            margin: 25px 0;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        #countdown div {
+            background: rgba(0, 0, 0, 0.35);
+            padding: 14px 6px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #countdown span {
+            display: block;
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #ffd700;
+            text-shadow: 0 0 12px rgba(255, 215, 0, 0.8);
+        }
+
+        #countdown div {
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ===== TEXT ===== */
+        .wish {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-top: 10px;
+            animation: fadeUp 1.5s ease;
+        }
+
+        .hint {
+            margin-top: 16px;
+            font-size: 0.85rem;
+            opacity: 0.6;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes panelFade {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes gradientMove {
+            from {
+                background-position: 0% 50%;
+            }
+
+            to {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes yearPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            #countdown {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        #startBtn {
+            display: none;
+            margin-top: 30px;
+            padding: 12px 32px;
+            font-size: 1rem;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            color: #000;
+            background: linear-gradient(120deg, #ffd700, #ff4d4d);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ===== INTRO SCREEN ===== -->
+    <div id="intro">
+        <div class="intro-text">
+            <p class="line">Một năm nữa lại trôi qua...</p>
+            <p class="line">Có những kỷ niệm không thể quên</p>
+            <p class="line">Có những ước mơ đang dang dở</p>
+            <p class="line highlight">Cùng chào đón năm mới 2026 ✨</p>
+            <button id="startBtn">🎵 Bắt đầu</button>
+        </div>
+    </div>
+
+    <canvas id="fireworks"></canvas>
+
+    <div class="container">
+        <h1 id="title">Tạm biệt năm <span id="year">2025</span></h1>
+
+        <p class="wish" id="wishText">
+            Tạm biệt 2025 – hãy cùng đếm ngược đến khoảnh khắc năm mới 🎉
+        </p>
+
+        <div id="countdown">
+            <div><span id="days">0</span>Ngày</div>
+            <div><span id="hours">0</span>Giờ</div>
+            <div><span id="minutes">0</span>Phút</div>
+            <div><span id="seconds">5</span>Giây</div>
+        </div>
+
+        <p class="hint">🎇 Click chuột để bắn pháo hoa</p>
+        <audio id="bgMusic" loop>
+            <source src="music.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+    <script>
+        // ===== INTRO CONTROL =====
+        const introDuration = 7000; // thời gian intro chạy (ms)
+
+        window.addEventListener("load", () => {
+            setTimeout(() => {
+                const music = document.getElementById("bgMusic");
+                const btn = document.getElementById("startBtn");
+                btn.style.display = 'inline';
+                btn.addEventListener("click", () => {
+                    document.getElementById("intro").classList.add("hide");
+                    document.querySelector(".container").classList.add("show");
+                    music.volume = 0.6;
+                    music.play(); // ✅ KHÔNG BỊ CHẶN
+
+                    document.getElementById("intro").classList.add("hide");
+                    document.querySelector(".container").classList.add("show");
+
+                    startCountdown();
+                });
+            }, introDuration);
+        });
+    </script>
+
+    <script>
+        /* ===== COUNTDOWN ===== */
+        /* ===== COUNTDOWN ===== */
+        const targetDate = new Date("January 1, 2026 00:00:00").getTime();
+        let fakeNow;
+        let timer = null;
+
+        function startCountdown() {
+            fakeNow = new Date("December 31, 2025 23:59:55").getTime();
+
+            timer = setInterval(() => {
+                const diff = targetDate - fakeNow;
+
+                if (diff <= 0) {
+                    clearInterval(timer);
+
+                    ["days", "hours", "minutes", "seconds"].forEach(id =>
+                        document.getElementById(id).innerText = 0
+                    );
+
+                    document.getElementById("title").innerHTML = `Happy New Year <span id="year">2026</span>`;
+                    document.getElementById("wishText").innerText =
+                        "Chúc bạn một năm 2026 tràn đầy sức khỏe, niềm vui và thành công ✨";
+
+                    for (let i = 0; i < 6; i++) {
+                        setTimeout(() => {
+                            explode(
+                                Math.random() * innerWidth,
+                                Math.random() * innerHeight * 0.5
+                            );
+                        }, i * 350);
+                    }
+                    return;
+                }
+
+                document.getElementById("days").innerText =
+                    Math.floor(diff / (1000 * 60 * 60 * 24));
+                document.getElementById("hours").innerText =
+                    Math.floor((diff / (1000 * 60 * 60)) % 24);
+                document.getElementById("minutes").innerText =
+                    Math.floor((diff / (1000 * 60)) % 60);
+                document.getElementById("seconds").innerText =
+                    Math.floor((diff / 1000) % 60);
+
+                fakeNow += 1000;
+            }, 1000);
+        }
+
+        /* ===== FIREWORKS ===== */
+        const canvas = document.getElementById("fireworks");
+        const ctx = canvas.getContext("2d");
+
+        function resize() {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+        }
+        resize();
+        addEventListener("resize", resize);
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.vx = (Math.random() - 0.5) * 6;
+                this.vy = (Math.random() - 0.5) * 6;
+                this.life = 100;
+                this.r = Math.random() * 2 + 1;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += 0.04;
+                this.life--;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        let particles = [];
+
+        function explode(x, y) {
+            const colors = ["#ffd700", "#ff4d4d", "#00ffff", "#ffffff"];
+            for (let i = 0; i < 90; i++) {
+                particles.push(new Particle(
+                    x, y, colors[Math.floor(Math.random() * colors.length)]
+                ));
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = "rgba(0,0,0,0.15)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            particles = particles.filter(p => p.life > 0);
+            particles.forEach(p => { p.update(); p.draw(); });
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        canvas.addEventListener("click", e => explode(e.clientX, e.clientY));
+
+        setInterval(() => {
+            explode(Math.random() * innerWidth, Math.random() * innerHeight * 0.5);
+        }, 2200);
+    </script>
+
+</body>
+
+</html>
