@@ -287,12 +287,12 @@
 
         <p class="hint">🎇 Click chuột để bắn pháo hoa</p>
         <audio id="bgMusic" loop>
-            <source src="music.mp3" type="audio/mpeg">
+            <source src="/2026/audio.mp3" type="audio/mpeg">
         </audio>
     </div>
     <script>
         // ===== INTRO CONTROL =====
-        const introDuration = 7000; // thời gian intro chạy (ms)
+        const introDuration = 6500; // thời gian intro chạy (ms)
 
         window.addEventListener("load", () => {
             setTimeout(() => {
@@ -308,7 +308,7 @@
                     document.getElementById("intro").classList.add("hide");
                     document.querySelector(".container").classList.add("show");
 
-                    startCountdown();
+                    setTimeout(startCountdown, 2000);
                 });
             }, introDuration);
         });
