@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tổ 3 – Lớp 11A1 | THPT Mai Thúc Loan</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --red:#e63946;--gold:#f4a522;--navy:#0d1b2a;--teal:#00b4d8;--pink:#ff6b9d; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Quicksand',sans-serif;background:var(--navy);color:#fff;overflow-x:hidden}
+
+  /* HERO */
+  .hero{min-height:100vh;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;text-align:center;padding:60px 20px 80px}
+  .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(230,57,70,.35) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(0,180,216,.3) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(244,165,34,.15) 0%,transparent 70%),var(--navy);z-index:0}
+  .hero-dots{position:absolute;inset:0;z-index:0;background-image:radial-gradient(circle,rgba(255,255,255,.07) 1px,transparent 1px);background-size:36px 36px}
+  .fs{position:absolute;border-radius:50%;opacity:.12;animation:flt 6s ease-in-out infinite}
+  .fs1{width:320px;height:320px;background:var(--red);top:-80px;left:-80px}
+  .fs2{width:200px;height:200px;background:var(--teal);bottom:-60px;right:-40px;animation-delay:2s}
+  .fs3{width:140px;height:140px;background:var(--gold);top:40%;right:8%;animation-delay:1s}
+  .fs4{width:100px;height:100px;background:var(--pink);bottom:20%;left:6%;animation-delay:3s}
+  @keyframes flt{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-22px) scale(1.04)}}
+  .hero-content{position:relative;z-index:2}
+  .school-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(8px);border-radius:50px;padding:8px 22px;font-size:13px;font-weight:600;letter-spacing:1px;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fdu .7s ease both}
+  .hero-number{font-family:'Baloo 2',cursive;font-size:clamp(110px,22vw,200px);font-weight:800;line-height:.85;margin-top:20px;color:rgb(230, 57, 70)}
+  .hero-title{font-family:'Baloo 2',cursive;font-size:clamp(26px,5vw,52px);font-weight:700;line-height:1.2;margin-top:10px;animation:fup .7s .2s ease both}
+  .hero-title .ac{color:var(--gold)}
+  .hero-sub{font-size:15px;font-weight:600;letter-spacing:2px;color:rgba(255,255,255,.55);text-transform:uppercase;margin-top:8px;animation:fup .7s .3s ease both}
+  .stats{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:40px;animation:fup .7s .4s ease both}
+  .pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:50px;padding:10px 20px;font-size:14px;font-weight:700;backdrop-filter:blur(6px);transition:transform .2s,background .2s}
+  .pill:hover{transform:translateY(-3px);background:rgba(255,255,255,.14)}
+  .pill em{font-size:20px;font-style:normal} .pill b{font-size:22px;font-family:'Baloo 2',cursive}
+  .scroll-hint{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(255,255,255,.35);font-size:11px;letter-spacing:2px;text-transform:uppercase;animation:plse 2s infinite}
+  .scroll-hint::after{content:'';width:1px;height:40px;background:linear-gradient(to bottom,rgba(255,255,255,.4),transparent);animation:scrl 1.5s ease-in-out infinite}
+  @keyframes scrl{0%,100%{transform:scaleY(1);opacity:1}50%{transform:scaleY(.5);opacity:.5}}
+  @keyframes plse{0%,100%{opacity:.5}50%{opacity:1}}
+
+  /* SECTION */
+  .section{padding:80px 20px;max-width:1200px;margin:0 auto}
+  .sec-header{text-align:center;margin-bottom:54px}
+  .sec-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);border:1px solid rgba(244,165,34,.35);border-radius:50px;padding:5px 16px;margin-bottom:16px}
+  .sec-title{font-family:'Baloo 2',cursive;font-size:clamp(28px,4vw,46px);font-weight:800;line-height:1.1}
+  .sec-title span{display:block} .sec-title .t2{color:var(--teal)}
+  .g-group{margin-bottom:48px}
+  .g-label{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+  .g-label .gi{font-size:28px} .g-label .gt{font-family:'Baloo 2',cursive;font-size:20px;font-weight:700}
+  .g-label .gc{background:rgba(255,255,255,.08);border-radius:50px;padding:3px 14px;font-size:13px;font-weight:700;color:rgba(255,255,255,.55)}
+  .g-label::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(255,255,255,.12),transparent)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:20px}
+
+  /* CARD */
+  .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:26px 16px 22px;text-align:center;cursor:pointer;transition:transform .3s,border-color .3s,box-shadow .3s;position:relative;overflow:hidden}
+  .card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s;border-radius:20px}
+  .card:hover{transform:translateY(-8px)} .card:hover::before{opacity:1}
+  .card.girl{border-color:rgba(255,107,157,.2)} .card.girl::before{background:linear-gradient(135deg,rgba(255,107,157,.08),transparent)}
+  .card.girl:hover{border-color:rgba(255,107,157,.5);box-shadow:0 20px 40px rgba(255,107,157,.15)}
+  .card.boy{border-color:rgba(0,180,216,.2)} .card.boy::before{background:linear-gradient(135deg,rgba(0,180,216,.08),transparent)}
+  .card.boy:hover{border-color:rgba(0,180,216,.5);box-shadow:0 20px 40px rgba(0,180,216,.15)}
+  .card.leader{border-color:rgba(244,165,34,.3)!important} .card.leader::before{background:linear-gradient(135deg,rgba(244,165,34,.12),transparent)!important}
+  .card.leader:hover{border-color:rgba(244,165,34,.6)!important;box-shadow:0 20px 40px rgba(244,165,34,.2)!important}
+  .crown{position:absolute;top:10px;right:12px;font-size:18px;animation:wbl 2s ease-in-out infinite}
+  @keyframes wbl{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+  .av{width:72px;height:72px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:28px;font-family:'Baloo 2',cursive;font-weight:800;overflow:hidden;flex-shrink:0}
+  .av.girl{background:linear-gradient(135deg,#ff6b9d,#c44dff);box-shadow:0 6px 20px rgba(255,107,157,.35)}
+  .av.boy{background:linear-gradient(135deg,#00b4d8,#0077b6);box-shadow:0 6px 20px rgba(0,180,216,.35)}
+  .av.leader{background:linear-gradient(135deg,#f4a522,#e63946)!important;box-shadow:0 6px 20px rgba(244,165,34,.4)!important}
+  .av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+  .m-av{overflow:hidden}
+  .m-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+  .c-name{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;line-height:1.3;margin-bottom:6px}
+  .c-role{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:50px;display:inline-block}
+  .c-role.leader{background:rgba(244,165,34,.2);color:var(--gold)}
+  .c-role.girl{background:rgba(255,107,157,.15);color:#ff8fb5}
+  .c-role.boy{background:rgba(0,180,216,.15);color:#48cae4}
+
+  /* MODAL */
+  .overlay{position:fixed;inset:0;z-index:1000;background:rgba(5,12,22,.85);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+  .overlay.open{opacity:1;pointer-events:all}
+  .modal{background:linear-gradient(160deg,#0f2236,#0d1b2a 60%,#10202e);border:1px solid rgba(255,255,255,.1);border-radius:28px;width:100%;max-width:460px;overflow:hidden;position:relative;transform:scale(.88) translateY(20px);transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .3s;opacity:0;box-shadow:0 40px 80px rgba(0,0,0,.6)}
+  .overlay.open .modal{transform:scale(1) translateY(0);opacity:1}
+  .m-banner{height:120px;position:relative;overflow:hidden}
+  .m-banner-bg{position:absolute;inset:0}
+  .m-banner-dots{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.12) 1px,transparent 1px);background-size:22px 22px}
+  .m-banner-shine{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent)}
+  .m-av-wrap{position:absolute;bottom:-46px;left:50%;transform:translateX(-50%);z-index:2}
+  .m-av{width:96px;height:96px;border-radius:50%;border:4px solid #0d1b2a;display:flex;align-items:center;justify-content:center;font-size:42px;font-family:'Baloo 2',cursive;font-weight:800;position:relative}
+  .m-crown{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:24px;animation:wbl 2s ease-in-out infinite;filter:drop-shadow(0 2px 6px rgba(244,165,34,.6))}
+  .m-body{padding:62px 32px 32px;text-align:center}
+  .m-name{font-family:'Baloo 2',cursive;font-size:24px;font-weight:800;line-height:1.2;margin-bottom:8px}
+  .m-badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:50px;padding:5px 18px;margin-bottom:26px}
+  .m-div{height:1px;background:rgba(255,255,255,.07);margin:0 0 24px}
+  .m-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;text-align:left}
+  .m-info{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:13px 15px}
+  .m-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:5px}
+  .m-val{font-size:14px;font-weight:700;color:#fff;line-height:1.35}
+  .m-quote{border-left:3px solid;border-radius:0 12px 12px 0;padding:14px 18px;font-size:14px;font-style:italic;line-height:1.75;color:rgba(255,255,255,.65);text-align:left;margin-bottom:22px;background:rgba(255,255,255,.04)}
+  .m-close{position:absolute;top:16px;right:16px;width:36px;height:36px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:rgba(255,255,255,.7);transition:background .2s,transform .25s;z-index:10}
+  .m-close:hover{background:rgba(255,255,255,.2);transform:rotate(90deg)}
+  .m-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+  .m-tag{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:50px;padding:5px 14px;font-size:12px;font-weight:700}
+
+  /* SPIRIT */
+  .spirit{padding:0 20px 80px}
+  .spirit-in{max-width:1200px;margin:0 auto;background:linear-gradient(135deg,rgba(230,57,70,.12),rgba(0,180,216,.1));border:1px solid rgba(255,255,255,.08);border-radius:32px;padding:60px 40px;text-align:center;position:relative;overflow:hidden}
+  .spirit-in::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(244,165,34,.08),transparent 60%);pointer-events:none}
+  .spirit-in .em{font-size:60px;display:block;margin-bottom:20px}
+  .spirit-in h2{font-family:'Baloo 2',cursive;font-size:clamp(22px,4vw,42px);font-weight:800;margin-bottom:16px}
+  .spirit-in h2 i{font-style:normal;color:var(--gold)}
+  .spirit-in p{font-size:15px;line-height:1.9;color:rgba(255,255,255,.65);max-width:600px;margin:0 auto 36px}
+  .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+  .chip{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:50px;padding:10px 20px;font-size:14px;font-weight:700;transition:transform .2s,background .2s}
+  .chip:hover{transform:scale(1.06);background:rgba(255,255,255,.12)}
+
+  footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 20px;text-align:center;color:rgba(255,255,255,.3);font-size:13px}
+  footer strong{color:rgba(255,255,255,.6)}
+
+  @keyframes fup{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fdu{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+  .reveal{opacity:0;transform:translateY(32px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.visible{opacity:1;transform:translateY(0)}
+  @media(max-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px}.spirit-in{padding:40px 20px}.m-body{padding:58px 20px 24px}.m-name{font-size:20px}}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div><div class="hero-dots"></div>
+  <div class="fs fs1"></div><div class="fs fs2"></div><div class="fs fs3"></div><div class="fs fs4"></div>
+  <div class="hero-content">
+    <div class="school-badge"><span>🏫</span> THPT Mai Thúc Loan</div>
+    <div class="hero-number">TỔ 3</div>
+    <h1 class="hero-title">Lớp <span class="ac">11A1</span></h1>
+    <p class="hero-sub">Năm học 2024 – 2027</p>
+    <div class="stats">
+      <div class="pill"><em>👥</em><b>11</b><span>thành viên</span></div>
+      <div class="pill"><em>👧</em><b>3</b><span>nữ</span></div>
+      <div class="pill"><em>👦</em><b>8</b><span>nam</span></div>
+    </div>
+  </div>
+  <div class="scroll-hint">Cuộn xuống</div>
+</section>
+
+<!-- MEMBERS (rendered by JS) -->
+<div class="section reveal" id="members">
+  <div class="sec-header">
+    <div class="sec-tag">✨ Thành viên</div>
+    <h2 class="sec-title">
+      <span>Những con người</span>
+      <span class="t2">tuyệt vời nhất tổ 3</span>
+    </h2>
+  </div>
+  <div id="groups"></div>
+</div>
+
+<!-- SPIRIT -->
+<div class="spirit reveal">
+  <div class="spirit-in">
+    <span class="em">🔥</span>
+    <h2>Tổ 3 – <i>Mạnh mẽ, Đoàn kết,</i><br>Bứt phá!</h2>
+    <p>Chúng ta là tổ 3 – không phải nhất vì số thứ tự, mà nhất vì tinh thần! Dù 3 nữ hay 8 nam, tất cả đều cùng một trái tim, cùng một màu áo và cùng một mục tiêu: <strong style="color:#fff">toả sáng rực rỡ!</strong></p>
+    <div class="chips">
+      <div class="chip">🤝 Đoàn kết</div><div class="chip">📚 Học giỏi</div>
+      <div class="chip">😄 Vui vẻ</div><div class="chip">⚡ Năng động</div>
+      <div class="chip">🎯 Quyết tâm</div><div class="chip">💪 Kiên trì</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><strong>Tổ 3 – Lớp 11A1</strong> · Trường THPT Mai Thúc Loan</p>
+  <p style="margin-top:8px">Năm học 2024 – 2025 · Made with ❤️ by Tổ 3</p>
+</footer>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="handleOverlay(event)">
+  <div class="modal">
+    <button class="m-close" onclick="closeModal()">✕</button>
+    <div class="m-banner">
+      <div class="m-banner-bg" id="mBg"></div>
+      <div class="m-banner-dots"></div>
+      <div class="m-banner-shine"></div>
+      <div class="m-av-wrap">
+        <div class="m-av" id="mAv">
+          <span id="mInit"></span>
+          <span class="m-crown" id="mCrown" style="display:none">👑</span>
+        </div>
+      </div>
+    </div>
+    <div class="m-body">
+      <div class="m-name" id="mName"></div>
+      <div class="m-badge" id="mBadge"></div>
+      <div class="m-div"></div>
+      <div class="m-grid" id="mGrid"></div>
+      <div class="m-quote" id="mQuote"></div>
+      <div class="m-tags" id="mTags"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATA = [
+  { name:'Phạm Bá Việt',        init:'V', gender:'boy',  isLeader:true, role:'Tổ trưởng',
+    stt:'01', birthday:'16/05/2009', hometown:'Hà Tĩnh', hobby:'Bóng đá, âm nhạc',
+    motto:'„Dẫn đầu bằng trái tim, chinh phục bằng tâm huyết."',
+    tags:['⚽ Bóng đá','🎵 Âm nhạc','💡 Lãnh đạo','🌟 Trách nhiệm'],
+    bannerGrad:'linear-gradient(135deg,#c44dff 0%,#f4a522 100%)',
+    avGrad:'linear-gradient(135deg,#f4a522,#e63946)', avShadow:'rgba(244,165,34,.5)',
+    qBorder:'#f4a522', badgeBg:'rgba(244,165,34,.18)', badgeColor:'#f4d44a' },
+
+  { name:'Đặng Trần Hà Trang',   init:'T', gender:'girl',
+    role:'Thành viên', stt:'02', birthday:'12/06/2009', hometown:'Hà Tĩnh', hobby:'Ca hát, nấu ăn',
+    motto:'„Mỗi ngày đến lớp là một ngày đáng nhớ."',
+    tags:['🎵 Âm nhạc','🍳 Nấu ăn','😊 Thân thiện','✨ Vui vẻ'],
+    bannerGrad:'linear-gradient(135deg,#ff6b9d 0%,#c44dff 100%)',
+    avGrad:'linear-gradient(135deg,#ff6b9d,#c44dff)', avShadow:'rgba(255,107,157,.5)',
+    qBorder:'#ff6b9d', badgeBg:'rgba(255,107,157,.18)', badgeColor:'#ff8fb5' },
+
+  { name:'Nguyễn Thị Quỳnh Trang', init:'T', gender:'girl',
+    role:'Thành viên', stt:'03', birthday:'16/05/2009', hometown:'Hà Tĩnh', hobby:'Đọc truyện, chụp ảnh',
+    motto:'„Hoa nở đẹp nhất khi được chăm chút mỗi ngày."',
+    tags:['📸 Nhiếp ảnh','📚 Chăm chỉ','🌺 Dịu dàng','🎯 Mục tiêu'],
+    bannerGrad:'linear-gradient(135deg,#ff9a3c 0%,#ff6b9d 100%)',
+    avGrad:'linear-gradient(135deg,#ff6b9d,#c44dff)', avShadow:'rgba(255,107,157,.5)',
+    qBorder:'#ff8fb5', badgeBg:'rgba(255,107,157,.18)', badgeColor:'#ff8fb5' },
+
+  { name:'Trương Hữu Tân',       init:'T', gender:'boy',
+    role:'Thành viên', stt:'04', birthday:'22/08/2009', hometown:'Hà Tĩnh', hobby:'Bóng đá, game',
+    motto:'„Thua keo này, bày keo khác."',
+    tags:['⚽ Bóng đá','🎮 Gaming','😄 Hài hước','💪 Năng động'],
+    bannerGrad:'linear-gradient(135deg,#00b4d8 0%,#0077b6 100%)',
+    avGrad:'linear-gradient(135deg,#00b4d8,#0077b6)', avShadow:'rgba(0,180,216,.5)',
+    qBorder:'#00b4d8', badgeBg:'rgba(0,180,216,.18)', badgeColor:'#48cae4' },
+
+  { name:'Tô Hữu Ngọc',         init:'N', gender:'boy',
+    role:'Thành viên', stt:'05', birthday:'16/11/2009', hometown:'Hà Tĩnh', hobby:'Lập trình, âm nhạc',
+    motto:'„Code không chạy? Debug tiếp thôi!"',
+    tags:['💻 Lập trình','🎸 Âm nhạc','🧠 Thông minh','🔥 Nhiệt huyết'],
+    bannerGrad:'linear-gradient(135deg,#0077b6 0%,#06d6a0 100%)',
+    avGrad:'linear-gradient(135deg,#00b4d8,#0077b6)', avShadow:'rgba(0,180,216,.5)',
+    qBorder:'#06d6a0', badgeBg:'rgba(0,180,216,.18)', badgeColor:'#48cae4' },
+
+  { name:'Phan Đình Lộc',        init:'L', gender:'boy',
+    role:'Thành viên', stt:'06', birthday:'25/03/2009', hometown:'Hà Tĩnh', hobby:'Bóng rổ, đọc sách',
+    motto:'„Khó khăn không bỏ cuộc, thử thách không lùi bước."',
+    tags:['🏀 Bóng rổ','📖 Đọc sách','💪 Kiên định','⚡ Quyết đoán'],
+    bannerGrad:'linear-gradient(135deg,#e63946 0%,#00b4d8 100%)',
+    avGrad:'linear-gradient(135deg,#00b4d8,#0077b6)', avShadow:'rgba(0,180,216,.5)',
+    qBorder:'#e63946', badgeBg:'rgba(0,180,216,.18)', badgeColor:'#48cae4' },
+
+  { name:'Trương Quang Hoành',   init:'H', gender:'boy',
+    role:'Thành viên', stt:'07', birthday:'22/12/2009', hometown:'Hà Tĩnh', hobby:'Bơi lội, vẽ tranh',
+    motto:'„Sóng lớn thì dũng cảm bơi, đường xa thì kiên nhẫn đi."',
+    tags:['🏊 Bơi lội','🎨 Nghệ thuật','🌊 Mạo hiểm','😎 Bình tĩnh'],
+    bannerGrad:'linear-gradient(135deg,#00b4d8 0%,#7b2d8b 100%)',
+    avGrad:'linear-gradient(135deg,#00b4d8,#0077b6)', avShadow:'rgba(0,180,216,.5)',
+    qBorder:'#9b4dca', badgeBg:'rgba(0,180,216,.18)', badgeColor:'#48cae4' },
+
+  { name:'Võ Bùi Gia Hân',       init:'H', gender:'girl',
+    role:'Thành viên', stt:'08', birthday:'29/07/2009', hometown:'Hà Tĩnh', hobby:'Phim hoạt hình, cờ vua',
+    motto:'„Nước cờ nhỏ, chiến thắng lớn."',
+    tags:['♟️ Cờ vua','🎬 Phim ảnh','🧩 Tư duy','😏 Bí ẩn'],
+    bannerGrad:'linear-gradient(135deg,#ff6b9d 0%,#06d6a0 100%)',
+    avGrad:'linear-gradient(135deg,#ff6b9d,#c44dff)', avShadow:'rgba(255,107,157,.5)',
+    qBorder:'#06d6a0', badgeBg:'rgba(255,107,157,.18)', badgeColor:'#ff8fb5' },
+
+  { name:'Phan Huy Hải Đăng',    init:'Đ', gender:'boy',
+    role:'Thành viên', stt:'09', birthday:'27/04/2009', hometown:'Hà Tĩnh', hobby:'Chạy bộ, nghe nhạc',
+    motto:'„Mỗi bước chạy là một bước gần hơn đến ước mơ."',
+    tags:['🏃 Chạy bộ','🎧 Âm nhạc','🌤️ Lạc quan','🔋 Bền bỉ'],
+    bannerGrad:'linear-gradient(135deg,#f4a522 0%,#00b4d8 100%)',
+    avGrad:'linear-gradient(135deg,#00b4d8,#0077b6)', avShadow:'rgba(0,180,216,.5)',
+    qBorder:'#f4a522', badgeBg:'rgba(0,180,216,.18)', badgeColor:'#48cae4' },
+
+  { name:'Nguyễn Văn Đạt',       init:'Đ', gender:'boy',
+    role:'Thành viên', stt:'10', birthday:'26/06/2009', hometown:'Hà Tĩnh', hobby:'Cầu lông, nấu ăn',
+    motto:'„Thua sân cầu lông nhưng không thua trận học tập!"',
+    tags:['🏸 Cầu lông','🍜 Nấu ăn','😂 Hài tính','🤜 Đồng đội'],
+    bannerGrad:'linear-gradient(135deg,#00b4d8 0%,#e63946 100%)',
+    avGrad:'linear-gradient(135deg,#00b4d8,#0077b6)', avShadow:'rgba(0,180,216,.5)',
+    qBorder:'#48cae4', badgeBg:'rgba(0,180,216,.18)', badgeColor:'#48cae4' },
+
+  { name:'Nguyễn Gia Bảo',       init:'B', gender:'boy',
+    role:'Thành viên', stt:'11', birthday:'27/08/2009', hometown:'Hà Tĩnh', hobby:'Bóng đá, xem phim',
+    motto:'„Hùng không phải vì to, mà vì không bao giờ bỏ cuộc."',
+    tags:['⚽ Bóng đá','🎬 Phim ảnh','💪 Dũng cảm','🔥 Nhiệt huyết'],
+    bannerGrad:'linear-gradient(135deg,#0077b6 0%,#e63946 100%)',
+    avGrad:'linear-gradient(135deg,#00b4d8,#0077b6)', avShadow:'rgba(0,180,216,.5)',
+    qBorder:'#e63946', badgeBg:'rgba(0,180,216,.18)', badgeColor:'#48cae4' },
+];
+
+// ── Render cards ──────────────────────────────────────────
+function avInner(m) {
+  return m.photo
+    ? `<img src="${m.photo}" alt="${m.name}" onerror="this.parentNode.innerHTML='${m.init}'">`
+    : m.init;
+}
+
+function renderCard(m, i) {
+  const cls = ['card', m.gender, m.isLeader ? 'leader' : ''].filter(Boolean).join(' ');
+  const avCls = ['av', m.gender, m.isLeader ? 'leader' : ''].filter(Boolean).join(' ');
+  const roleCls = 'c-role ' + (m.isLeader ? 'leader' : m.gender);
+
+  return `
+    <div class="${cls}" onclick="openModal(${i})" style="transition-delay:${i * 0.07}s">
+      ${m.isLeader ? '<span class="crown">👑</span>' : ''}
+      <div class="${avCls}">${avInner(m)}</div>
+      <div class="c-name">${m.name}</div>
+      <span class="${roleCls}">${m.isLeader ? '👑 ' : ''}${m.role}</span>
+    </div>`;
+}
+
+function renderGroup(label, icon, members, indices) {
+  return `
+    <div class="g-group">
+      <div class="g-label">
+        <span class="gi">${icon}</span>
+        <span class="gt">${label}</span>
+        <span class="gc">${members.length} bạn</span>
+      </div>
+      <div class="grid">
+        ${members.map((m, j) => renderCard(m, indices[j])).join('')}
+      </div>
+    </div>`;
+}
+
+const girls = DATA.map((m, i) => ({ m, i })).filter(x => x.m.gender === 'girl');
+const boys  = DATA.map((m, i) => ({ m, i })).filter(x => x.m.gender === 'boy');
+
+document.getElementById('groups').innerHTML =
+  renderGroup('Các nữ thành viên', '💖', girls.map(x => x.m), girls.map(x => x.i)) +
+  renderGroup('Các nam thành viên', '💙', boys.map(x => x.m),  boys.map(x => x.i));
+
+// ── Modal ────────────────────────────────────────────────
+function openModal(i) {
+  const m = DATA[i];
+  document.getElementById('mBg').style.background = m.bannerGrad;
+  const av = document.getElementById('mAv');
+  av.style.background = m.photo ? 'transparent' : m.avGrad;
+  av.style.boxShadow = `0 8px 30px ${m.avShadow}`;
+  document.getElementById('mInit').innerHTML = m.photo
+    ? `<img src="${m.photo}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentNode.innerHTML='${m.init}';this.parentNode.style.background='${m.avGrad}'">`
+    : m.init;
+  document.getElementById('mCrown').style.display = m.isLeader ? 'block' : 'none';
+  document.getElementById('mName').textContent = m.name;
+  const badge = document.getElementById('mBadge');
+  badge.textContent = (m.isLeader ? '👑 ' : '') + m.role;
+  badge.style.background = m.badgeBg;
+  badge.style.color = m.badgeColor;
+  document.getElementById('mGrid').innerHTML = `
+    <div class="m-info"><div class="m-label">🔢 Số thứ tự</div><div class="m-val">#${m.stt}</div></div>
+    <div class="m-info"><div class="m-label">🎂 Ngày sinh</div><div class="m-val">${m.birthday}</div></div>
+    <div class="m-info"><div class="m-label">🏠 Quê quán</div><div class="m-val">${m.hometown}</div></div>
+    <div class="m-info"><div class="m-label">🎯 Sở thích</div><div class="m-val">${m.hobby}</div></div>`;
+  const q = document.getElementById('mQuote');
+  q.textContent = m.motto;
+  q.style.borderLeftColor = m.qBorder;
+  document.getElementById('mTags').innerHTML = m.tags.map(t => `<span class="m-tag">${t}</span>`).join('');
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleOverlay(e) {
+  if (e.target === document.getElementById('overlay')) closeModal();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ── Scroll reveal ────────────────────────────────────────
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: .1 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
